@@ -18,12 +18,12 @@ class DICE():
         self.NT = len(self.TT)
         self.t = np.arange(1, self.NT+1)
 
-    def init_parameters(self, a3=2.00, prstp=0.015):
+    def init_parameters(self, a3=2.00, prstp=0.015, elasmu=1.45):
 
         # Maximum cumulative extraction fossil fuels (GtC); denoted by CCum
         self.fosslim = 6000
         self.ifopt = 0  # Indicator where optimized is 1 and base is 0
-        self.elasmu = 1.45  # Elasticity of marginal utility of consumption
+        self.elasmu = elasmu  # Elasticity of marginal utility of consumption
         self.prstp = prstp  # Initial rate of social time preference per year
 
         self.init_pop_and_tech_parameters()
@@ -337,9 +337,9 @@ class DICE():
         resUtility[0] = self.time_step * self.scale1 * \
             np.sum(iCEMUTOTPER) + self.scale2
 
-    def init_variables(self):
+    def init_variables(self): # TODO: add full variable names as comments
         NT = self.NT
-        self.K = np.zeros(NT)
+        self.K = np.zeros(NT)       
         self.YGROSS = np.zeros(NT)
         self.EIND = np.zeros(NT)
         self.E = np.zeros(NT)
