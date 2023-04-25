@@ -7,3 +7,5 @@ carbon emission and affects the world gross product via damages caused by the na
 
 This Python solution solves the DICE model following the [R approach](https://github.com/olugovoy/climatedice/tree/master/R). The attached PDF file gives the reader all details about the Python approach. The code is
  well commented and gives the user different plots as solution of the DICE model. Some results are exposed in the PDF file. 
+
+`dicelib.py` is a class definition and auxilliary functions of a refactored version.
