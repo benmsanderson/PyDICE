@@ -139,10 +139,10 @@ class DICE():
 
     def init_srm_parameters(self,srm_frac=0.0):
         self.srm_trg = 1.5
-        self.srm_inc = .1
-        self.srm_end = 2070
+        #self.srm_inc = .1
+        #self.srm_end = 2070
         self.srm_frac = srm_frac
-        self.srm_decay = 0.95
+        #self.srm_decay = 0.95
         
     def init_climatedamage_parameters(self, a3=2.00):
         # ** Climate damage parameters
@@ -237,7 +237,7 @@ class DICE():
         return iCCA[index] + icumetree[index]
 
     def fSRM(self,iTATM, iSRM, index):
-        return iSRM[index-1]*self.srm_decay+(np.max([self.srm_trg,iTATM[index-1]])-self.srm_trg)*self.fco22x/self.t2xco2*self.srm_frac
+        return (np.max([self.srm_trg,iTATM[index-1]])-self.srm_trg)*self.fco22x/self.t2xco2*self.srm_frac
     
     # Eq. 22: the dynamics of the radiative forcing
     def fFORC(self, iMAT, iSRM, index):
