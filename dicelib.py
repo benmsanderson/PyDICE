@@ -18,7 +18,7 @@ class DICE():
         self.NT = len(self.TT)
         self.t = np.arange(1, self.NT+1)
 
-    def init_parameters(self, a3=2.00, prstp=0.015, elasmu=1.45, srm_frac=0, srm_trg=1.5, srm_decay=0.9):
+    def init_parameters(self, a3=2.00, prstp=0.015, elasmu=1.45, srm_frac=0, srm_trg=1.5, srm_decay=0.9,srm_end=2070):
 
         # Maximum cumulative extraction fossil fuels (GtC); denoted by CCum
         self.fosslim = 6000
@@ -35,7 +35,7 @@ class DICE():
         self.init_emissions_parameters()
         self.init_carboncycle_parameters()
         self.init_climatemodel_parameters()
-        self.init_srm_parameters(srm_frac,srm_decay,srm_trg)
+        self.init_srm_parameters(srm_frac,srm_decay,srm_trg,srm_end)
         self.init_climatedamage_parameters(a3)
         self.init_abatementcost_parameters()
 
@@ -140,10 +140,10 @@ class DICE():
         # eta in the model; Eq.22 : Forcings of equilibrium CO2 doubling (Wm-2)   /3.6813 /
         self.fco22x = 3.6813
 
-    def init_srm_parameters(self,srm_frac=0.0,srm_decay=0.9,srm_trg=1.5):
+    def init_srm_parameters(self,srm_frac=0.0,srm_decay=0.9,srm_trg=1.5,srm_end=2070):
         self.srm_trg = srm_trg
         #self.srm_inc = .1
-        #self.srm_end = 2070
+        self.srm_end = 2070
         self.srm_frac = srm_frac
         self.srm_decay = srm_decay
         self.alpha_so2 = 10  #0.74 * 5.35
@@ -252,7 +252,10 @@ class DICE():
         if (index == 0):
             return 0
         else:
-            return iIS[index-1]*self.srm_decay+(np.max([self.srm_trg,iTATM[index-1]])-self.srm_trg)*self.srm_frac
+            if (self.TT[index]<self.srm_end):
+                return iIS[index-1]*self.srm_decay+(np.max([self.srm_trg,iTATM[index-1]])-self.srm_trg)*self.srm_frac
+            else:
+                return iIS[index-1]*self.srm_decay
         
     def fSRM(self,iIS, index):
             return self.alpha_so2*np.exp(-(self.beta_so2/iIS[index])**self.gamma_so2)
