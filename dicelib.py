@@ -254,7 +254,7 @@ class DICE():
             return iIS[index-1]*self.srm_decay+(np.max([self.srm_trg,iTATM[index-1]])-self.srm_trg)*self.srm_frac
         
     def fSRM(self,iIS, index):
-            return self.alpha_so2*np.exp(-(self.beta_so2/iIS(index))**self.gamma_so2)
+            return self.alpha_so2*np.exp(-(self.beta_so2/iIS[index])**self.gamma_so2)
     
     # Eq. 22: the dynamics of the radiative forcing
     def fFORC(self, iMAT, iSRM, index):
