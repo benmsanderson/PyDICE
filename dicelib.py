@@ -18,7 +18,7 @@ class DICE():
         self.NT = len(self.TT)
         self.t = np.arange(1, self.NT+1)
 
-    def init_parameters(self, a3=2.00, prstp=0.015, elasmu=1.45, srm_frac=0):
+    def init_parameters(self, a3=2.00, prstp=0.015, elasmu=1.45, srm_frac=0, srm_trg=1.5, srm_decay=0.9):
 
         # Maximum cumulative extraction fossil fuels (GtC); denoted by CCum
         self.fosslim = 6000
@@ -27,6 +27,9 @@ class DICE():
         self.prstp = prstp  # Initial rate of social time preference per year
 
         self.srm_frac = srm_frac
+        self.srm_decay = srm_decay
+        self.srm_trg = srm_trg
+
         
         self.init_pop_and_tech_parameters()
         self.init_emissions_parameters()
@@ -137,12 +140,12 @@ class DICE():
         # eta in the model; Eq.22 : Forcings of equilibrium CO2 doubling (Wm-2)   /3.6813 /
         self.fco22x = 3.6813
 
-    def init_srm_parameters(self,srm_frac=0.0):
-        self.srm_trg = 1.5
+    def init_srm_parameters(self,srm_frac=0.0,srm_decay=0.9,srm_trg=1.5):
+        self.srm_trg = srm_trg
         #self.srm_inc = .1
         #self.srm_end = 2070
         self.srm_frac = srm_frac
-        self.srm_decay = 0.9
+        self.srm_decay = srm_decay
         
     def init_climatedamage_parameters(self, a3=2.00):
         # ** Climate damage parameters
