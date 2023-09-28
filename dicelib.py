@@ -275,7 +275,7 @@ class DICE():
         return iYGROSS[index] * iDAMFRAC[index]
 
     def fSRMCOST(self, iIS, index):
-        return self.scost*iIS
+        return self.scost*iIS[index]
 
     # Dynamics of Lambda; Eq. 10 - cost of the reudction of carbon emission (Abatement cost)
     def fABATECOST(self, iYGROSS, iMIU, icost1, index):
