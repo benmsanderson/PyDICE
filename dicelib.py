@@ -149,6 +149,7 @@ class DICE():
         self.alpha_so2 = 10  #0.74 * 5.35
         self.beta_so2 = 8000 #2246 #org from
         self.gamma_so2 = 0.5 #0.23 #from https://acp.copernicus.org/articles/22/2955/2022/
+        self.scost=14e9
 
 
     def init_climatedamage_parameters(self, a3=2.00):
@@ -273,6 +274,9 @@ class DICE():
     def fDAMAGES(self, iYGROSS, iDAMFRAC, index):
         return iYGROSS[index] * iDAMFRAC[index]
 
+    def fSRMCOST(self, iIS, index):
+        return self.scost[index]*iSRM
+
     # Dynamics of Lambda; Eq. 10 - cost of the reudction of carbon emission (Abatement cost)
     def fABATECOST(self, iYGROSS, iMIU, icost1, index):
         return iYGROSS[index] * icost1[index] * iMIU[index]**self.expcost2
@@ -333,8 +337,8 @@ class DICE():
         return iYGROSS[index] * (1 - iDAMFRAC[index])
 
     # Production after abatement cost
-    def fY(self, iYNET, iABATECOST, index):
-        return iYNET[index] - iABATECOST[index]
+    def fY(self, iYNET, iABATECOST, iSRMCOST, index):
+        return iYNET[index] - iABATECOST[index] -iSRMCOST[index]
 
     # Consumption Eq. 11
     def fC(self, iY, iI, index):
@@ -389,6 +393,7 @@ class DICE():
         self.DAMFRAC = np.zeros(NT)
         self.DAMAGES = np.zeros(NT)
         self.ABATECOST = np.zeros(NT)
+        self.SRMCOST = np.zeros(NT)
         self.MCABATE = np.zeros(NT)
         self.CPRICE = np.zeros(NT)
         self.YNET = np.zeros(NT)
@@ -471,7 +476,8 @@ class DICE():
             self.ML[i] = self.fML(self.ML, self.MU, i)
             self.MU[i] = self.fMU(self.MAT, self.MU, self.ML, i)
             self.IS[i] = self.fIS(self.TATM,self.IS, i) 
-            self.SRM[i] = self.fSRM(self.IS, i) 
+            self.SRM[i] = self.fSRM(self.IS, i)
+            self.SRMCOST[i] = self.fSRMCOST(self.IS, i)
             self.FORC[i] = self.fFORC(self.MAT,self.SRM, i)
             self.TATM[i] = self.fTATM(self.TATM, self.FORC, self.TOCEAN, i)
             self.TOCEAN[i] = self.fTOCEAN(self.TATM, self.TOCEAN, i)
@@ -482,7 +488,7 @@ class DICE():
             self.MCABATE[i] = self.fMCABATE(iMIU, i)
             self.CPRICE[i] = self.fCPRICE(iMIU, i)
             self.YNET[i] = self.fYNET(self.YGROSS, self.DAMFRAC, i)
-            self.Y[i] = self.fY(self.YNET, self.ABATECOST, i)
+            self.Y[i] = self.fY(self.YNET, self.ABATECOST, self.SRMCOST, i)
             self.I[i] = self.fI(iS, self.Y, i)
             self.C[i] = self.fC(self.Y, self.I, i)
             self.CPC[i] = self.fCPC(self.C, self.l, i)
