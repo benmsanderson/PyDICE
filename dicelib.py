@@ -18,7 +18,7 @@ class DICE():
         self.NT = len(self.TT)
         self.t = np.arange(1, self.NT+1)
 
-    def init_parameters(self, a3=2.00, prstp=0.015, elasmu=1.45):
+    def init_parameters(self, a3=2.00, prstp=0.015, elasmu=1.45, srm_frac=0):
 
         # Maximum cumulative extraction fossil fuels (GtC); denoted by CCum
         self.fosslim = 6000
@@ -472,20 +472,20 @@ class DICE():
     def plot_run(self, title_str):
         Tmax = 2150
         NT = self.NT
-        variables = [self.optimal_controls[NT:(2*NT)], self.optimal_controls[0:NT], self.CPRICE, self.EIND, self.TATM, self.DAMAGES, self.MAT,
+        variables = [self.optimal_controls[NT:(2*NT)], self.optimal_controls[0:NT], self.CPRICE, self.SRM, self.TATM, self.DAMAGES, self.MAT,
                      self.E]
         variables = [var[self.TT < Tmax] for var in variables]
         variable_labels = ["Saving rate",
                            "Em rate",  # 'Carbon emission control rate'
                            "carbon price",
-                           "INdustrial emissions",
+                           "Solar Radiation Management",
                            # Increase temperature of the atmosphere (TATM)
                            "Degrees C from 1900",
                            "Damages",  # 'trillions 2010 USD per year'
                            "GtC from 1750",  # 'Carbon concentration increase in the atmosphere'
                            "GtCO2 per year"  # Total CO2 emission
                            ]
-        variable_limits = [[0, 0.5], [0, 1], [0, 400], [-20, 40],
+        variable_limits = [[0, 0.5], [0, 1], [0, 400], [0, 5],
                            [0, 5], [0, 150], [0, 1500],  [-20, 50]]  # y axis ranges
         plot_world_variables(self.TT[self.TT < Tmax], variables, variable_labels, variable_limits,
                              title=title_str,figsize=[4+len(variables), 7],
