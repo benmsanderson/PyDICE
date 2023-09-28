@@ -26,11 +26,13 @@ class DICE():
         self.elasmu = elasmu  # Elasticity of marginal utility of consumption
         self.prstp = prstp  # Initial rate of social time preference per year
 
+        self.srm_frac = srm_frac
+        
         self.init_pop_and_tech_parameters()
         self.init_emissions_parameters()
         self.init_carboncycle_parameters()
         self.init_climatemodel_parameters()
-        self.init_srm_parameters()
+        self.init_srm_parameters(srm_frac)
         self.init_climatedamage_parameters(a3)
         self.init_abatementcost_parameters()
 
@@ -135,11 +137,11 @@ class DICE():
         # eta in the model; Eq.22 : Forcings of equilibrium CO2 doubling (Wm-2)   /3.6813 /
         self.fco22x = 3.6813
 
-    def init_srm_parameters(self):
+    def init_srm_parameters(self,srm_frac=0.0):
         self.srm_trg = 1.5
         self.srm_inc = .1
         self.srm_end = 2070
-        self.srm_frac = 0.0
+        self.srm_frac = srm_frac
         self.srm_decay = 0.95
         
     def init_climatedamage_parameters(self, a3=2.00):
