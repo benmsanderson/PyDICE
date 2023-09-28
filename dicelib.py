@@ -149,7 +149,8 @@ class DICE():
         self.alpha_so2 = 10  #0.74 * 5.35
         self.beta_so2 = 8000 #2246 #org from
         self.gamma_so2 = 0.5 #0.23 #from https://acp.copernicus.org/articles/22/2955/2022/
-        self.scost=14e9
+        self.scost=14e6
+        
 
 
     def init_climatedamage_parameters(self, a3=2.00):
