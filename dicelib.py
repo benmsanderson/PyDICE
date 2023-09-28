@@ -237,7 +237,10 @@ class DICE():
         return iCCA[index] + icumetree[index]
 
     def fSRM(self,iTATM, iSRM, index):
-        return (np.max([self.srm_trg,iTATM[index-1]])-self.srm_trg)*self.fco22x/self.t2xco2*self.srm_frac
+        if (index == 0):
+            return 0
+        else:
+            return (np.max([self.srm_trg,iTATM[index-1]])-self.srm_trg)*self.fco22x/self.t2xco2*self.srm_frac
     
     # Eq. 22: the dynamics of the radiative forcing
     def fFORC(self, iMAT, iSRM, index):
