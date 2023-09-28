@@ -35,7 +35,7 @@ class DICE():
         self.init_emissions_parameters()
         self.init_carboncycle_parameters()
         self.init_climatemodel_parameters()
-        self.init_srm_parameters(srm_frac)
+        self.init_srm_parameters(srm_frac,srm_decay,srm_trg)
         self.init_climatedamage_parameters(a3)
         self.init_abatementcost_parameters()
 
