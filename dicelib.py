@@ -146,10 +146,11 @@ class DICE():
         #self.srm_end = 2070
         self.srm_frac = srm_frac
         self.srm_decay = srm_decay
-        self.alpha_so2 = 0.74 * 5.35
-        self.beta_so2 = 2246
-        self.gamma_so2 = 0.23
-        
+        self.alpha_so2 = 10  #0.74 * 5.35
+        self.beta_so2 = 8000 #2246 #org from
+        self.gamma_so2 = 0.5 #0.23 #from https://acp.copernicus.org/articles/22/2955/2022/
+
+
     def init_climatedamage_parameters(self, a3=2.00):
         # ** Climate damage parameters
         self.a10 = 0  # Initial damage intercept                         /0   /
@@ -255,7 +256,8 @@ class DICE():
         
     def fSRM(self,iIS, index):
             return self.alpha_so2*np.exp(-(self.beta_so2/iIS[index])**self.gamma_so2)
-    
+
+        
     # Eq. 22: the dynamics of the radiative forcing
     def fFORC(self, iMAT, iSRM, index):
         return self.fco22x * np.log(iMAT[index]/588.000)/np.log(2) + self.forcoth[index] - iSRM[index]
