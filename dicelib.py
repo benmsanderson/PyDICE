@@ -146,6 +146,9 @@ class DICE():
         #self.srm_end = 2070
         self.srm_frac = srm_frac
         self.srm_decay = srm_decay
+        self.alpha_so2 = 0.74 * 5.35
+        self.beta_so2 = 2246
+        self.gamma_so2 = 0.23
         
     def init_climatedamage_parameters(self, a3=2.00):
         # ** Climate damage parameters
@@ -239,11 +242,19 @@ class DICE():
     def fCCATOT(self, iCCA, icumetree, index):
         return iCCA[index] + icumetree[index]
 
-    def fSRM(self,iTATM, iSRM, index):
+#    def fSRM(self,iTATM, iSRM, index):
+#        if (index == 0):
+#            return 0
+#        else:
+#            return iSRM[index-1]*self.srm_decay+(np.max([self.srm_trg,iTATM[index-1]])-self.srm_trg)*self.fco22x/self.t2xco2*self.srm_frac
+    def fIS(self,iTATM,iIS):
         if (index == 0):
             return 0
         else:
-            return iSRM[index-1]*self.srm_decay+(np.max([self.srm_trg,iTATM[index-1]])-self.srm_trg)*self.fco22x/self.t2xco2*self.srm_frac
+            return iIS[index-1]*self.srm_decay+(np.max([self.srm_trg,iTATM[index-1]])-self.srm_trg)*self.srm_frac
+        
+    def fSRM(self,iIS, index):
+            return self.alpha_so2*np.exp(-(self.beta_so2/iIS(index))**self.gamma_so2)
     
     # Eq. 22: the dynamics of the radiative forcing
     def fFORC(self, iMAT, iSRM, index):
@@ -260,7 +271,7 @@ class DICE():
     # Dynamics of Lambda; Eq. 10 - cost of the reudction of carbon emission (Abatement cost)
     def fABATECOST(self, iYGROSS, iMIU, icost1, index):
         return iYGROSS[index] * icost1[index] * iMIU[index]**self.expcost2
-
+    
     # Marginal Abatement cost
     def fMCABATE(self, iMIU, index):
         return self.pbacktime[index] * iMIU[index]**(self.expcost2-1)
@@ -384,6 +395,8 @@ class DICE():
         self.PERIODU = np.zeros(NT)
         self.CEMUTOTPER = np.zeros(NT)
         self.SRM = np.zeros(NT)
+        self.IS = np.zeros(NT)
+
         
         self.optimal_controls = np.zeros(2*NT)
 
@@ -452,7 +465,8 @@ class DICE():
             self.MAT[i] = self.fMAT(self.MAT, self.MU, self.E, i)
             self.ML[i] = self.fML(self.ML, self.MU, i)
             self.MU[i] = self.fMU(self.MAT, self.MU, self.ML, i)
-            self.SRM[i] = self.fSRM(self.TATM,self.SRM, i)            
+            self.IS[i] = self.fIS(self.TATM,self.IS, i) 
+            self.SRM[i] = self.fSRM(self.IS, i) 
             self.FORC[i] = self.fFORC(self.MAT,self.SRM, i)
             self.TATM[i] = self.fTATM(self.TATM, self.FORC, self.TOCEAN, i)
             self.TOCEAN[i] = self.fTOCEAN(self.TATM, self.TOCEAN, i)
