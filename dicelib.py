@@ -207,7 +207,7 @@ class DICE():
     def InitializeSigma(self, isigma, igsig, icost1, iNT):
         for i in range(1, iNT):
             isigma[i] = isigma[i-1] * np.exp(igsig[i-1] * self.time_step)
-            icost1[i] = self.pbacktime[i3] * isigma[i] / self.expcost2 / 1000
+            icost1[i] = self.pbacktime[i] * isigma[i] / self.expcost2 / 1000
 
     def InitializeCarbonTree(self, icumetree, iNT):
         for i in range(1, iNT):
