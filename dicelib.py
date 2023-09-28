@@ -134,6 +134,13 @@ class DICE():
         # eta in the model; Eq.22 : Forcings of equilibrium CO2 doubling (Wm-2)   /3.6813 /
         self.fco22x = 3.6813
 
+    def init_srm_parameters(self):
+        self.srm_trg = 1.5
+        self.srm_inc = .1
+        self.srm_end = 2070
+        self.srm_frac = 0.0
+        self.srm_decay = 0.95
+        
     def init_climatedamage_parameters(self, a3=2.00):
         # ** Climate damage parameters
         self.a10 = 0  # Initial damage intercept                         /0   /
@@ -200,7 +207,7 @@ class DICE():
     def InitializeSigma(self, isigma, igsig, icost1, iNT):
         for i in range(1, iNT):
             isigma[i] = isigma[i-1] * np.exp(igsig[i-1] * self.time_step)
-            icost1[i] = self.pbacktime[i] * isigma[i] / self.expcost2 / 1000
+            icost1[i] = self.pbacktime[i3] * isigma[i] / self.expcost2 / 1000
 
     def InitializeCarbonTree(self, icumetree, iNT):
         for i in range(1, iNT):
@@ -226,9 +233,12 @@ class DICE():
     def fCCATOT(self, iCCA, icumetree, index):
         return iCCA[index] + icumetree[index]
 
+    def fSRM(self,iTATM, iSRM, index):
+        return iSRM[index-1]*self.srm_decay+(np.max(self.srm_trg,iTATM[index-1])-self.srm_trg)*self.fco22x/self.t2xco2*self.srm_frac
+    
     # Eq. 22: the dynamics of the radiative forcing
-    def fFORC(self, iMAT, index):
-        return self.fco22x * np.log(iMAT[index]/588.000)/np.log(2) + self.forcoth[index]
+    def fFORC(self, iMAT, iSRM, index):
+        return self.fco22x * np.log(iMAT[index]/588.000)/np.log(2) + self.forcoth[index] - iSRM[index]
 
     # Dynamics of Omega; Eq.9
     def fDAMFRAC(self, iTATM, index):
@@ -364,7 +374,8 @@ class DICE():
         self.RI = np.zeros(NT)
         self.PERIODU = np.zeros(NT)
         self.CEMUTOTPER = np.zeros(NT)
-
+        self.SRM = np.zeros(NT)
+        
         self.optimal_controls = np.zeros(2*NT)
 
         self.InitializeLabor(self.l, NT)
@@ -432,7 +443,8 @@ class DICE():
             self.MAT[i] = self.fMAT(self.MAT, self.MU, self.E, i)
             self.ML[i] = self.fML(self.ML, self.MU, i)
             self.MU[i] = self.fMU(self.MAT, self.MU, self.ML, i)
-            self.FORC[i] = self.fFORC(self.MAT, i)
+            self.SRM[i] = self.fSRM(self.TATM,self.SRM, i)            
+            self.FORC[i] = self.fFORC(self.MAT,self.SRM, i)
             self.TATM[i] = self.fTATM(self.TATM, self.FORC, self.TOCEAN, i)
             self.TOCEAN[i] = self.fTOCEAN(self.TATM, self.TOCEAN, i)
             self.DAMFRAC[i] = self.fDAMFRAC(self.TATM, i)
