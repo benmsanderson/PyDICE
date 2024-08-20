@@ -18,7 +18,7 @@ class DICE():
         self.NT = len(self.TT)
         self.t = np.arange(1, self.NT+1)
 
-    def init_parameters(self, a3=2.00, prstp=0.015, elasmu=1.45, srm_frac=0, srm_trg=1.5, srm_decay=0.9,srm_end=2070,scost=14e6):
+    def init_parameters(self, a2=0.00236, prstp=0.015, elasmu=1.45, srm_frac=0, srm_trg=1.5, srm_decay=0.9,srm_end=2070,scost=14e6):
 
         # Maximum cumulative extraction fossil fuels (GtC); denoted by CCum
         self.fosslim = 6000
@@ -158,8 +158,8 @@ class DICE():
         self.a10 = 0  # Initial damage intercept                         /0   /
         self.a20 = None  # Initial damage quadratic term
         self.a1 = 0  # Damage intercept                                 /0   /
-        self.a2 = 0.00236  # Damage quadratic term                     /0.00236/
-        self.a3 = a3  # Damage exponent                              /2.00   /
+        self.a2 = a2  # Damage quadratic term                     /0.00236/
+        self.a3 = 2.00  # Damage exponent                              /2.00   /
 
     def init_abatementcost_parameters(self):
         # ** Abatement cost
