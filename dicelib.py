@@ -36,7 +36,7 @@ class DICE():
         self.init_carboncycle_parameters()
         self.init_climatemodel_parameters()
         self.init_srm_parameters(srm_frac,srm_decay,srm_trg,srm_end,scost)
-        self.init_climatedamage_parameters(a3)
+        self.init_climatedamage_parameters(a2)
         self.init_abatementcost_parameters()
 
         # ** Scaling and inessential parameters
