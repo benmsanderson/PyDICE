@@ -153,7 +153,7 @@ class DICE():
         
 
 
-    def init_climatedamage_parameters(self, a3=2.00):
+    def init_climatedamage_parameters(self, a2=0.00236):
         # ** Climate damage parameters
         self.a10 = 0  # Initial damage intercept                         /0   /
         self.a20 = None  # Initial damage quadratic term
