@@ -18,7 +18,7 @@ class DICE():
         self.NT = len(self.TT)
         self.t = np.arange(1, self.NT+1)
 
-    def init_parameters(self, a2=0.00236, prstp=0.015, elasmu=1.45, srm_frac=0, srm_trg=1.5, srm_decay=0.9,srm_end=2070,scost=14e6):
+    def init_parameters(self, a2=0.00236, prstp=0.015, elasmu=1.45, srm_frac=0, srm_trg=1.5, srm_decay=0.9,srm_end=2070,scost=14e6,limmiu=1.1):
 
         # Maximum cumulative extraction fossil fuels (GtC); denoted by CCum
         self.fosslim = 6000
@@ -37,7 +37,7 @@ class DICE():
         self.init_climatemodel_parameters()
         self.init_srm_parameters(srm_frac,srm_decay,srm_trg,srm_end,scost)
         self.init_climatedamage_parameters(a2)
-        self.init_abatementcost_parameters()
+        self.init_abatementcost_parameters(limmiu)
 
         # ** Scaling and inessential parameters
         # * Note that these are unnecessary for the calculations
@@ -95,7 +95,7 @@ class DICE():
         self.miu0 = miu0  # Initial emissions control rate for base case 2015  /.03    /
 
     # ** Carbon cycle
-    def init_carboncycle_parameters(self, mat0=851, mu0=460, ml0=1740, mateq=588, mueq=360, mleq=1720):
+    def init_carboncycle_parameters(self, mat0=368*2.13, mu0=460, ml0=1740, mateq=588, mueq=360, mleq=1720):
         # * Initial Conditions
         # Initial Concentration in atmosphere 2015 (GtC)       /851  /
         self.mat0 = mat0
@@ -125,20 +125,20 @@ class DICE():
     # ** Climate model parameters
     def init_climatemodel_parameters(self):
         # Equilibrium temp impact (oC per doubling CO2)    / 3.1 /
-        self.t2xco2 = 3.1
+        self.t2xco2 = 7/2# 3.1
         # 2015 forcings of non-CO2 GHG (Wm-2)              / 0.5 /
         self.fex0 = 0.5
         # 2100 forcings of non-CO2 GHG (Wm-2)              / 1.0 /
-        self.fex1 = 1.0
+        self.fex1 = 0.1
         # Initial lower stratum temp change (C from 1900) /.0068/
         self.tocean0 = 0.0068
         # Initial atmospheric temp change (C from 1900)    /0.85/
-        self.tatm0 = 0.85
-        self.c1 = 0.1005  # Climate equation coefficient for upper level  /0.1005/
-        self.c3 = 0.088  # Transfer coefficient upper to lower stratum    /0.088/
-        self.c4 = 0.025  # Transfer coefficient for lower level           /0.025/
+        self.tatm0 = 0.5
+        self.c1 = 1/8.2# 0.1005  # Climate equation coefficient for upper level  /0.1005/
+        self.c3 = 0.85 #0.088  # Transfer coefficient upper to lower stratum    /0.088/
+        self.c4 = 0.006 #0.025  # Transfer coefficient for lower level           /0.025/
         # eta in the model; Eq.22 : Forcings of equilibrium CO2 doubling (Wm-2)   /3.6813 /
-        self.fco22x = 3.6813
+        self.fco22x = 7.6/2 #3.6813
 
     def init_srm_parameters(self,srm_frac=0.0,srm_decay=0.9,srm_trg=1.5,srm_end=2070,scost=14e6):
         self.srm_trg = srm_trg
@@ -161,13 +161,13 @@ class DICE():
         self.a2 = a2  # Damage quadratic term                     /0.00236/
         self.a3 = 2.00  # Damage exponent                              /2.00   /
 
-    def init_abatementcost_parameters(self):
+    def init_abatementcost_parameters(self,limmiu=1.2):
         # ** Abatement cost
         # Theta2 in the model, Eq. 10 Exponent of control cost function             / 2.6  /
         self.expcost2 = 2.6
         self.pback = 550  # Cost of backstop 2010$ per tCO2 2015          / 550  /
         self.gback = 0.025  # Initial cost decline backstop cost per period / .025/
-        self.limmiu = 1.2  # Upper limit on control rate after 2150        / 1.2 /
+        self.limmiu = limmiu  # Upper limit on control rate after 2150        / 1.2 /
         self.tnopol = 45  # Period before which no emissions controls base  / 45   /
         # Initial base carbon price (2010$ per tCO2)      / 2    /
         self.cprice0 = 2
@@ -423,7 +423,7 @@ class DICE():
         # * Control variable limits
         MIU_lo = np.full(NT, 0.01)
         MIU_up = np.full(NT, self.limmiu)
-        MIU_up[0:29] = 1
+        MIU_up[0:5] = np.arange(0,5)*0.05
         MIU_lo[0] = self.miu0
         MIU_up[0] = self.miu0
         MIU_lo[MIU_lo == MIU_up] = 0.99999*MIU_lo[MIU_lo == MIU_up]
