@@ -18,7 +18,7 @@ class DICE():
         self.NT = len(self.TT)
         self.t = np.arange(1, self.NT+1)
 
-    def init_parameters(self, a2=0.00236, prstp=0.015, elasmu=1.45, srm_frac=0, srm_trg=1.5, srm_decay=0.9,srm_end=2070,scost=14e6,limmiu=1.1):
+    def init_parameters(self, a2=0.00236, prstp=0.015, elasmu=1.45, srm_frac=0, srm_trg=1.5, srm_decay=0.9,srm_end=2070,scost=14e6,limmiu=1.1,a3=2.00):
 
         # Maximum cumulative extraction fossil fuels (GtC); denoted by CCum
         self.fosslim = 6000
@@ -36,7 +36,7 @@ class DICE():
         self.init_carboncycle_parameters()
         self.init_climatemodel_parameters()
         self.init_srm_parameters(srm_frac,srm_decay,srm_trg,srm_end,scost)
-        self.init_climatedamage_parameters(a2)
+        self.init_climatedamage_parameters(a2,a3)
         self.init_abatementcost_parameters(limmiu)
 
         # ** Scaling and inessential parameters
@@ -147,19 +147,19 @@ class DICE():
         self.srm_frac = srm_frac
         self.srm_decay = srm_decay
         self.alpha_so2 = 10  #0.74 * 5.35
-        self.beta_so2 = 8000 #2246 #org from
+        self.beta_so2 = 8 #2246 #org from
         self.gamma_so2 = 0.5 #0.23 #from https://acp.copernicus.org/articles/22/2955/2022/
         self.scost=scost
         
 
 
-    def init_climatedamage_parameters(self, a2=0.00236):
+    def init_climatedamage_parameters(self, a2=0.00236, a3=2.00):
         # ** Climate damage parameters
         self.a10 = 0  # Initial damage intercept                         /0   /
         self.a20 = None  # Initial damage quadratic term
         self.a1 = 0  # Damage intercept                                 /0   /
         self.a2 = a2  # Damage quadratic term                     /0.00236/
-        self.a3 = 2.00  # Damage exponent                              /2.00   /
+        self.a3 = a3  # Damage exponent                              /2.00   /
 
     def init_abatementcost_parameters(self,limmiu=1.2):
         # ** Abatement cost
